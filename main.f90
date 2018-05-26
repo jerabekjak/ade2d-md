@@ -12,6 +12,8 @@ program main
   
   call init_glob()
   
+  
+  
 !   call solve()
 
 !   call final(config_file)
