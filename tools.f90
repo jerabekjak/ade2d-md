@@ -1,6 +1,46 @@
 module tools
 
- contains 
+ contains
+ 
+    subroutine fill_lin_system()
+        use types
+        use glob
+        
+        real(kind=rk) :: b = 0.2
+        integer(kind=ik) :: i, n
+        
+        do i = 1, lin_sys%els
+        
+            
+            
+!             Dx = 
+!             Dy = 
+!             
+!             vx = 
+!             vy = 
+            
+            lin_sys%A(i,-2) = 1.
+            lin_sys%A(i,-1) = 1.
+            lin_sys%A(i, 0) = 1.
+            lin_sys%A(i, 1) = 1.
+            lin_sys%A(i, 2) = 1.
+            
+            
+            lin_sys%b(i   ) = b/dt*lin_sys%c
+            
+            
+        end do
+        
+        
+        
+        
+        
+        
+    end subroutine 
+ 
+ 
+ 
+ 
    
 
     subroutine init_glob()
@@ -65,6 +105,9 @@ module tools
         call comment(config_unit)
         read(config_unit,*) adv
         
+        call comment(config_unit)
+        read(config_unit,*) diff_mult
+        
         call lin_sys_alloc()
         
         
@@ -110,7 +153,10 @@ module tools
         allocate(lin_sys%A(1:((geom%ndy+1) * (geom%ndx+1)),-2:2))
         allocate(lin_sys%b(1:((geom%ndy+1) * (geom%ndx+1))))
         allocate(lin_sys%c(1:((geom%ndy+1) * (geom%ndx+1))))
-    
+        
+        lin_sys%n = geom%ndy+1
+        lin_sys%m = geom%ndx+1
+        lin_sys%els = ((geom%ndy+1) * (geom%ndx+1))
     end subroutine lin_sys_alloc
    
     subroutine comment(unit)
