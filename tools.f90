@@ -69,11 +69,6 @@ module tools
         
         
 
-        
-        
-        
-        
-
 
     end subroutine init_glob
    
@@ -105,6 +100,9 @@ module tools
         end do
         
     end subroutine read_bc_coef
+    
+    
+    
     
     subroutine lin_sys_alloc()
         use glob
