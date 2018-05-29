@@ -18,8 +18,8 @@ c=gfortran -fimplicit-none  -fcoarray=single -fbounds-check -g3 -fdefault-real-8
 d=ade2d-`date -I`
 t=ade2d-`date +%Y-%m-%d-%H-%M-%S`
 
-all : main.o types.o glob.o tools.o
-	$c -g -o ade2d main.o types.o glob.o tools.o
+all : main.o types.o glob.o solve.o tools.o
+	$c -g -o ade2d main.o types.o glob.o solve.o tools.o
 
 
 
@@ -32,7 +32,7 @@ solve.o: types.o glob.o solve.f90
 	$c -c solve.f90
 tools.o: types.o glob.o solve.o tools.f90
 	$c -c tools.f90
-main.o: types.o glob.o tools.o main.f90
+main.o: types.o glob.o solve.o tools.o main.f90
 	$c -c main.f90
 #---------end CORE_obj------------------------------
 
