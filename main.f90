@@ -3,7 +3,7 @@ program main
     use solve
     use glob
     real(kind=rk) :: t=0._rk
- 
+    integer :: it = 0
     call init_glob()
 
     call fill_lin_system()
@@ -13,19 +13,16 @@ program main
         if (t > end_t) exit
         call solver_gs(lin_sys%els,lin_sys%A,lin_sys%b,lin_sys%c,lin_sys%n,lin_sys%m)
         call fill_b()
-        
         t = t + dt
-        
+        it=it + 1
+        if (modulo(it,1000) == 0) then
+            write(*,"(f10.5,a20)") t/end_t*100., ' % is calculated...'
+        end if
     end do
     
     
     
-    call prt_results(lin_sys)
-    
-    
-    
-    
-    
+    call prt_results(lin_sys,out_unit)
     
 !     test solver
 !     call test_solver()

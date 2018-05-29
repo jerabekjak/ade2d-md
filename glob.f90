@@ -12,12 +12,13 @@ module glob
    
     type(lin_sys_type), public :: lin_sys
     
-    real(kind=rk), dimension(:,:), allocatable :: diff_coef
-    real(kind=ik), dimension(:,:), allocatable :: bc_type
+    real(kind=rk), dimension(:,:), allocatable, public :: diff_coef
+    real(kind=ik), dimension(:,:), allocatable, public :: bc_type
     
-    real(kind=rk), dimension(1:2) :: adv
+    real(kind=rk), dimension(1:2), public :: adv
     
-    real(kind=rk), dimension(1:2) :: diff_mult
+    real(kind=rk), dimension(1:2), public :: diff_mult
     
-
+    integer, public :: out_unit
+!     
 end module glob

@@ -2,9 +2,10 @@ module tools
 
  contains
  
-    subroutine prt_results(lin_sys)
+    subroutine prt_results(lin_sys,out_unit)
         use types
         type(lin_sys_type), intent(in) :: lin_sys
+        integer, intent(in) :: out_unit
         real(kind=rk), dimension(lin_sys%m) :: wrk
         integer :: i, j, n, m, el
         character(len=20) :: fmt
@@ -17,7 +18,7 @@ module tools
                 wrk(j) = lin_sys%c(el)
                 el = el + 1
             end do
-            write (*,fmt) wrk
+            write (out_unit,fmt) wrk
         end do
         
     end subroutine prt_results
@@ -63,17 +64,17 @@ module tools
                 
             else if (wrk_bc == 0) then
             
-                wrk_d  = get_diff(i)
                 dxdy   = get_dxdy(i)
+                wrk_d  = get_diff(i)
                 
-                vx = adv(1)
-                vy = adv(2)
+                dx = dxdy(1)
+                dy = dxdy(2)
                 
                 diff_x = wrk_d(1)
                 diff_y = wrk_d(2)
                 
-                dx = dxdy(1)
-                dy = dxdy(2)
+                vx = adv(1)
+                vy = adv(2)
             
                 lin_sys%A(i,-2) = -diff_x/dx**2. + vx/(2.*dx)
                 lin_sys%A(i,-1) = -diff_y/dy**2. + vy/(2.*dy)
@@ -89,7 +90,7 @@ module tools
             end if 
             
         end do
-        
+
         call fill_b()
         
     end subroutine 
@@ -204,6 +205,7 @@ module tools
         integer :: bc_unit
         character(len=64) :: diff_file
         integer :: diff_unit
+        character(len=64) :: out_file
 
         ! check got arguments
         if (iargc() == 0) then
@@ -214,6 +216,7 @@ module tools
         config_unit = 101 
         bc_unit     = 102
         diff_unit   = 103
+        out_unit    = 104
 
         ! parsing + opening config file
         call getarg(1, config_file)
@@ -257,6 +260,10 @@ module tools
         
         call comment(config_unit)
         read(config_unit,*) diff_mult
+        
+        call comment(config_unit)
+        read(config_unit,*) out_file
+        open(out_unit, file=out_file, status='replace', action='write', iostat=ioerr)
         
         call lin_sys_alloc()
 
@@ -302,7 +309,7 @@ module tools
         allocate(lin_sys%b(1:((geom%ndy+1) * (geom%ndx+1))))
         allocate(lin_sys%c(1:((geom%ndy+1) * (geom%ndx+1))))
         
-        lin_sys%c = 0._rk
+        lin_sys%c = 20._rk
         
         lin_sys%n = geom%ndy+1
         lin_sys%m = geom%ndx+1
