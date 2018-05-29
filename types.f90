@@ -13,14 +13,11 @@ module types
         real (kind=rk), dimension(:), allocatable :: c
     end type lin_sys_type
     
-         
     type :: geom_type
         integer (kind=ik) :: ndx
         integer (kind=ik) :: ndy
         real (kind=rk), dimension(:), allocatable :: dx
         real (kind=rk), dimension(:), allocatable :: dy
     end type geom_type
-   
-   
-   
+    
 end module types

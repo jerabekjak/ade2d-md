@@ -52,13 +52,12 @@ module tools
                 
                 dx = dxdy(1)
                 dy = dxdy(2)
-                
             
                 lin_sys%A(i,-2) = -diff_x/dx**2. + vx/(2.*dx)
                 lin_sys%A(i,-1) = -diff_y/dy**2. + vy/(2.*dy)
                 lin_sys%A(i, 0) = b/dt + 2*diff_x/dx**2. + 2*diff_x/dx**2.
-                lin_sys%A(i, 1) = -diff_x/dx**2. - vx/(2.*dx)
-                lin_sys%A(i, 2) = -diff_y/dy**2. - vy/(2.*dy)
+                lin_sys%A(i, 1) = -diff_y/dy**2. - vy/(2.*dy)
+                lin_sys%A(i, 2) = -diff_x/dx**2. - vx/(2.*dx)
                 
                 lin_sys%b(i   ) = b/dt*lin_sys%c(i)
                 
@@ -155,13 +154,13 @@ module tools
 
         ! check got arguments
         if (iargc() == 0) then
-            print *, 'no config file, eg.: ./ade2d conf.in'
+            print *, 'no config file, eg.: ./ade2d [conf.file]'
             stop
         end if
         
         config_unit = 101 
-        bc_unit = 102
-        diff_unit = 103
+        bc_unit     = 102
+        diff_unit   = 103
 
         ! parsing + opening config file
         call getarg(1, config_file)
@@ -195,7 +194,6 @@ module tools
         open(diff_unit, file=diff_file, status='old', action='read', iostat=ioerr)
         call read_diff_coef(diff_unit)
         
-        
         call comment(config_unit)
         read(config_unit,*) bc_file
         open(bc_unit, file=bc_file, status='old', action='read', iostat=ioerr)
@@ -208,9 +206,6 @@ module tools
         read(config_unit,*) diff_mult
         
         call lin_sys_alloc()
-        
-        
-
 
     end subroutine init_glob
    
@@ -247,11 +242,14 @@ module tools
     
     
     subroutine lin_sys_alloc()
+        use types
         use glob
         
         allocate(lin_sys%A(1:((geom%ndy+1) * (geom%ndx+1)),-2:2))
         allocate(lin_sys%b(1:((geom%ndy+1) * (geom%ndx+1))))
         allocate(lin_sys%c(1:((geom%ndy+1) * (geom%ndx+1))))
+        
+        lin_sys%c = 0._rk
         
         lin_sys%n = geom%ndy+1
         lin_sys%m = geom%ndx+1

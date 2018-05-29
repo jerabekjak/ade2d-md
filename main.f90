@@ -1,16 +1,26 @@
 program main
-  use tools
-  use solve
-  
+    use tools
+    use solve
+    use glob
  
     call init_glob()
 
     call fill_lin_system()
-
-  
+    
+    call solver_gs(lin_sys%els,lin_sys%A,lin_sys%b,lin_sys%c,lin_sys%n,lin_sys%m)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 !     test solver
 !     call test_solver()
-  
 
  contains
  
