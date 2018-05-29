@@ -7,14 +7,18 @@ module tools
         use glob
         
         real(kind=rk) :: b = 0.2
-        integer(kind=ik) :: i, n
+        integer :: i, n
+        real(kind=rk), dimension(1:2) :: wrk_d
+        
+        
         
         do i = 1, lin_sys%els
         
             
             
-!             Dx = 
-!             Dy = 
+          wrk_d  = det_diff(i)
+!           print *, i, wrk_d
+            
 !             
 !             vx = 
 !             vy = 
@@ -26,7 +30,7 @@ module tools
             lin_sys%A(i, 2) = 1.
             
             
-            lin_sys%b(i   ) = b/dt*lin_sys%c
+            lin_sys%b(i   ) = b/dt*lin_sys%c(i)
             
             
         end do
@@ -37,6 +41,32 @@ module tools
         
         
     end subroutine 
+    
+    function det_diff(iel)  result(d)
+        use types
+        use glob
+        integer, intent(in)           :: iel
+        real(kind=rk), dimension(1:2) :: d
+        
+        integer :: i, j
+        real    :: x
+        
+        i = modulo(real(iel-1),real(geom%ndx+1))
+        
+        x = real(iel-1)/real(geom%ndx+1)
+        j = x  ! this will cut the numbers after floating point to get the row index
+        
+        print *, iel, i, j
+        
+        
+        d = diff_coef(i,j)
+    
+    
+    end function 
+    
+    
+    
+    
  
  
  
