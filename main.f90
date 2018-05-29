@@ -12,7 +12,7 @@ program main
   
   call init_glob()
   
-  
+  call fill_lin_system()
   
 !   call solve()
 
