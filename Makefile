@@ -28,7 +28,9 @@ types.o: types.f90
 	$c -c types.f90 
 glob.o: types.o glob.f90
 	$c -c glob.f90
-tools.o: types.o glob.o tools.f90
+solve.o: types.o glob.o solve.f90
+	$c -c solve.f90
+tools.o: types.o glob.o solve.o tools.f90
 	$c -c tools.f90
 main.o: types.o glob.o tools.o main.f90
 	$c -c main.f90
