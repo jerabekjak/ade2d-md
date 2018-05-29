@@ -42,7 +42,7 @@ module tools
         
     end subroutine 
     
-    function det_diff(iel)  result(d)
+    function get_diff(iel)  result(d)
         use types
         use glob
         integer, intent(in)           :: iel
@@ -58,15 +58,31 @@ module tools
         
         print *, iel, i, j
         
-        
         d = diff_coef(i,j)
-    
     
     end function 
     
     
     
+    function get_bc(iel)  result(bc)
+        use types
+        use glob
+        integer, intent(in)           :: iel
+        integer(kind=ik), dimension(1:2) :: bc
+        
+        integer :: i, j
+        real    :: x
+        
+        i = modulo(real(iel-1),real(geom%ndx+1))
+        
+        x = real(iel-1)/real(geom%ndx+1)
+        j = x  ! this will cut the numbers after floating point to get the row index
+        
+        print *, iel, i, j
+        
+        bc = bc_type(i,j)
     
+    end function 
  
  
  
