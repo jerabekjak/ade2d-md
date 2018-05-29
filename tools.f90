@@ -2,10 +2,9 @@ module tools
 
  contains
  
-    subroutine prt_results(lin_sys,out_unit)
+    subroutine prt_results()
         use types
-        type(lin_sys_type), intent(in) :: lin_sys
-        integer, intent(in) :: out_unit
+        use glob
         real(kind=rk), dimension(lin_sys%m) :: wrk
         integer :: i, j, n, m, el
         character(len=20) :: fmt
@@ -78,7 +77,7 @@ module tools
             
                 lin_sys%A(i,-2) = -diff_x/dx**2. + vx/(2.*dx)
                 lin_sys%A(i,-1) = -diff_y/dy**2. + vy/(2.*dy)
-                lin_sys%A(i, 0) = b/dt + 2*diff_x/dx**2. + 2*diff_x/dx**2.
+                lin_sys%A(i, 0) = b/dt + 2*diff_x/dx**2. + 2*diff_y/dy**2.
                 lin_sys%A(i, 1) = -diff_y/dy**2. - vy/(2.*dy)
                 lin_sys%A(i, 2) = -diff_x/dx**2. - vx/(2.*dx)
                 

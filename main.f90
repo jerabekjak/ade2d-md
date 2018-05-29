@@ -20,9 +20,7 @@ program main
         end if
     end do
     
-    
-    
-    call prt_results(lin_sys,out_unit)
+    call prt_results()
     
 !     test solver
 !     call test_solver()
