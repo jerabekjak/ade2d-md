@@ -27,7 +27,7 @@ module tools
                 lin_sys%A(i, 1) = 0.
                 lin_sys%A(i, 2) = 0.
                 
-                lin_sys%b(i   ) = 20.
+!                 lin_sys%b(i   ) = 20.
                 
             else if (wrk_bc == 2) then
             
@@ -37,7 +37,7 @@ module tools
                 lin_sys%A(i, 1) = 0.
                 lin_sys%A(i, 2) = 0.
                 
-                lin_sys%b(i   ) = 0.
+!                 lin_sys%b(i   ) = 0.
                 
             else if (wrk_bc == 0) then
             
@@ -59,6 +59,45 @@ module tools
                 lin_sys%A(i, 1) = -diff_y/dy**2. - vy/(2.*dy)
                 lin_sys%A(i, 2) = -diff_x/dx**2. - vx/(2.*dx)
                 
+!                 lin_sys%b(i   ) = b/dt*lin_sys%c(i)
+                
+            else
+                print *, 'incorrect boundary condition index'
+                error stop
+            
+            end if 
+            
+        end do
+        
+        call fill_b()
+        
+!         do i = 1, lin_sys%els
+!             print *, lin_sys%A(i,:)
+!         end do
+        
+        
+    end subroutine 
+    
+    subroutine fill_b()
+        use glob
+        integer :: i
+        real(kind=rk) :: b = 0.35
+        integer(kind=ik)  :: wrk_bc
+
+        do i = 1, lin_sys%els
+            
+            wrk_bc = get_bc(i)
+            
+            if (wrk_bc == 1) then
+            
+                lin_sys%b(i   ) = 20.
+                
+            else if (wrk_bc == 2) then
+            
+                lin_sys%b(i   ) = 0.
+                
+            else if (wrk_bc == 0) then
+            
                 lin_sys%b(i   ) = b/dt*lin_sys%c(i)
                 
             else
@@ -69,14 +108,12 @@ module tools
             
         end do
         
-!         do i = 1, lin_sys%els
-!             print *, lin_sys%A(i,:)
-!         
-!         
-!         end do
-        
-        
     end subroutine 
+    
+    
+    
+    
+    
     
     
     ! returns the diffusion coefficient from 
@@ -165,7 +202,7 @@ module tools
         ! parsing + opening config file
         call getarg(1, config_file)
         open(config_unit, file=config_file, status='old', action='read', iostat=ioerr)
-        print *, 'reading file ', trim(config_file), ' with iostat ', ioerr
+!         print *, 'reading file ', trim(config_file), ' with iostat ', ioerr
 
         ! parsing parameters from config file
         call comment(config_unit)
@@ -254,6 +291,7 @@ module tools
         lin_sys%n = geom%ndy+1
         lin_sys%m = geom%ndx+1
         lin_sys%els = ((geom%ndy+1) * (geom%ndx+1))
+        
     end subroutine lin_sys_alloc
    
     subroutine comment(unit)

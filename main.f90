@@ -2,13 +2,21 @@ program main
     use tools
     use solve
     use glob
+    real(kind=rk) :: t=0._rk
  
     call init_glob()
 
     call fill_lin_system()
     
-    call solver_gs(lin_sys%els,lin_sys%A,lin_sys%b,lin_sys%c,lin_sys%n,lin_sys%m)
     
+    do 
+        if (t > end_t) exit
+        call solver_gs(lin_sys%els,lin_sys%A,lin_sys%b,lin_sys%c,lin_sys%n,lin_sys%m)
+        call fill_b()
+        
+        t = t + dt
+        
+    end do
     
     
     

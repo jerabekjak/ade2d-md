@@ -11,12 +11,14 @@ module solve
         integer(kind=ik), intent(in) :: n
         integer(kind=ik), intent(in) :: m
         
-        integer(kind=ik) :: i, j
+        integer(kind=ik) :: i, j, iter
         real(kind=rk)    :: sigma
         real(kind=rk)    :: err = 1.e-6
         real(kind=rk), dimension(size(c)) :: c_copy
         
         c_copy = c
+        
+        iter = 0
         
         do 
         
@@ -34,8 +36,11 @@ module solve
                 c(i) = 1./A(i,0)*(b(i) - sigma)
                 
             end do
-            
+!             print *, sum((c-c_copy)**2.)
+!             read(*,*)
+            iter = iter + 1
             if (sum((c-c_copy)**2.)<err) then
+!                 print *, iter
                 exit
             end if
             
