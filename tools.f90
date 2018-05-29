@@ -6,16 +6,19 @@ module tools
         use types
         type(lin_sys_type), intent(in) :: lin_sys
         real(kind=rk), dimension(lin_sys%m) :: wrk
-        integer :: i, j, n, m
+        integer :: i, j, n, m, el
+        character(len=20) :: fmt
         
-        do i = 1, n
-            do j = 1, m
-                
+        write(fmt,'("(",i0,"e10.3)")') lin_sys%m
+        
+        el = 1
+        do i = 1, lin_sys%n
+            do j = 1, lin_sys%m
+                wrk(j) = lin_sys%c(el)
+                el = el + 1
             end do
+            write (*,fmt) wrk
         end do
-        
-        
-        
         
     end subroutine prt_results
  

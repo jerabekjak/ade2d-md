@@ -20,7 +20,7 @@ program main
     
     
     
-    
+    call prt_results(lin_sys)
     
     
     
