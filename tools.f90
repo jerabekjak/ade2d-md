@@ -2,6 +2,23 @@ module tools
 
  contains
  
+    subroutine prt_results(lin_sys)
+        use types
+        type(lin_sys_type), intent(in) :: lin_sys
+        real(kind=rk), dimension(lin_sys%m) :: wrk
+        integer :: i, j, n, m
+        
+        do i = 1, n
+            do j = 1, m
+                
+            end do
+        end do
+        
+        
+        
+        
+    end subroutine prt_results
+ 
     subroutine fill_lin_system()
         use types
         use glob
@@ -15,6 +32,8 @@ module tools
         real(kind=rk) :: diff_x, diff_y
         real(kind=rk) :: dx, dy
         
+        
+        ! fill matrix a
         do i = 1, lin_sys%els
             
             wrk_bc = get_bc(i)
@@ -64,17 +83,11 @@ module tools
             else
                 print *, 'incorrect boundary condition index'
                 error stop
-            
             end if 
             
         end do
         
         call fill_b()
-        
-!         do i = 1, lin_sys%els
-!             print *, lin_sys%A(i,:)
-!         end do
-        
         
     end subroutine 
     
