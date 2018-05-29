@@ -6,42 +6,83 @@ module tools
         use types
         use glob
         
-        real(kind=rk) :: b = 0.2
+        real(kind=rk) :: b = 0.35
         integer :: i, n
         real(kind=rk), dimension(1:2) :: wrk_d
-        
-        
+        real(kind=rk), dimension(1:2) :: dxdy
+        integer(kind=ik)  :: wrk_bc
+        real(kind=rk) :: vx, vy
+        real(kind=rk) :: diff_x, diff_y
+        real(kind=rk) :: dx, dy
         
         do i = 1, lin_sys%els
-        
             
+            wrk_bc = get_bc(i)
             
-          wrk_d  = det_diff(i)
-!           print *, i, wrk_d
+            if (wrk_bc == 1) then
             
-!             
-!             vx = 
-!             vy = 
+                lin_sys%A(i,-2) = 0.
+                lin_sys%A(i,-1) = 0.
+                lin_sys%A(i, 0) = 1.
+                lin_sys%A(i, 1) = 0.
+                lin_sys%A(i, 2) = 0.
+                
+                lin_sys%b(i   ) = 20.
+                
+            else if (wrk_bc == 2) then
             
-            lin_sys%A(i,-2) = 1.
-            lin_sys%A(i,-1) = 1.
-            lin_sys%A(i, 0) = 1.
-            lin_sys%A(i, 1) = 1.
-            lin_sys%A(i, 2) = 1.
+                lin_sys%A(i,-2) = 0.
+                lin_sys%A(i,-1) = 0.
+                lin_sys%A(i, 0) = 1.
+                lin_sys%A(i, 1) = 0.
+                lin_sys%A(i, 2) = 0.
+                
+                lin_sys%b(i   ) = 0.
+                
+            else if (wrk_bc == 0) then
             
+                wrk_d  = get_diff(i)
+                dxdy   = get_dxdy(i)
+                
+                vx = adv(1)
+                vy = adv(2)
+                
+                diff_x = wrk_d(1)
+                diff_y = wrk_d(2)
+                
+                dx = dxdy(1)
+                dy = dxdy(2)
+                
             
-            lin_sys%b(i   ) = b/dt*lin_sys%c(i)
+                lin_sys%A(i,-2) = -diff_x/dx**2. + vx/(2.*dx)
+                lin_sys%A(i,-1) = -diff_y/dy**2. + vy/(2.*dy)
+                lin_sys%A(i, 0) = b/dt + 2*diff_x/dx**2. + 2*diff_x/dx**2.
+                lin_sys%A(i, 1) = -diff_x/dx**2. - vx/(2.*dx)
+                lin_sys%A(i, 2) = -diff_y/dy**2. - vy/(2.*dy)
+                
+                lin_sys%b(i   ) = b/dt*lin_sys%c(i)
+                
+            else
+                print *, 'incorrect boundary condition index'
+                error stop
             
+            end if 
             
         end do
         
-        
-        
-        
+!         do i = 1, lin_sys%els
+!             print *, lin_sys%A(i,:)
+!         
+!         
+!         end do
         
         
     end subroutine 
     
+    
+    ! returns the diffusion coefficient from 
+    ! array based on the number on linear equation
+    ! in the linear system
     function get_diff(iel)  result(d)
         use types
         use glob
@@ -56,8 +97,6 @@ module tools
         x = real(iel-1)/real(geom%ndx+1)
         j = x  ! this will cut the numbers after floating point to get the row index
         
-        print *, iel, i, j
-        
         d = diff_coef(i,j)
     
     end function 
@@ -67,8 +106,8 @@ module tools
     function get_bc(iel)  result(bc)
         use types
         use glob
-        integer, intent(in)           :: iel
-        integer(kind=ik), dimension(1:2) :: bc
+        integer, intent(in) :: iel
+        integer(kind=ik)    :: bc
         
         integer :: i, j
         real    :: x
@@ -78,15 +117,29 @@ module tools
         x = real(iel-1)/real(geom%ndx+1)
         j = x  ! this will cut the numbers after floating point to get the row index
         
-        print *, iel, i, j
-        
         bc = bc_type(i,j)
     
     end function 
  
  
  
- 
+    function get_dxdy(iel)  result(dxdy)
+        use types
+        use glob
+        integer, intent(in)           :: iel
+        real(kind=rk), dimension(1:2) :: dxdy
+        
+        integer :: i, j
+        real    :: x
+        
+        i = modulo(real(iel-1),real(geom%ndx+1))
+        
+        x = real(iel-1)/real(geom%ndx+1)
+        j = x  ! this will cut the numbers after floating point to get the row index
+        
+        dxdy = (/geom%dx(j),geom%dy(i)/)
+    
+    end function 
    
 
     subroutine init_glob()

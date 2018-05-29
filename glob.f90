@@ -13,7 +13,7 @@ module glob
     type(lin_sys_type), public :: lin_sys
     
     real(kind=rk), dimension(:,:), allocatable :: diff_coef
-    real(kind=rk), dimension(:,:), allocatable :: bc_type
+    real(kind=ik), dimension(:,:), allocatable :: bc_type
     
     real(kind=rk), dimension(1:2) :: adv
     
